@@ -1,15 +1,5 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
 from nsepy import get_history
 from datetime import date
-
-
-# In[2]:
-
 
 import requests
 import pandas as pd
@@ -20,66 +10,24 @@ import matplotlib.pyplot as plt
 
 plt.rcParams['figure.figsize'] = (20, 10)
 plt.style.use('fivethirtyeight')
-
-
-# In[18]:
-
-
 import warnings
 warnings.filterwarnings('ignore')
 
-
-# In[3]:
-
-
 import streamlit as st
-
-
-# In[4]:
-
 
 st.title("MACD Buy & Sell Indicator");
 
 
-# In[5]:
-
-
 st.text("Enter the stock ticker symbol and you will get to know the strategy when to place a trade. I had used 26,12,9 time frame for EMA.");
 
-
-# In[6]:
-
-
 symbol_input=st.text_input("Enter the stock ticker symbol")
-#symbol_input=input("Enter the stock ticker symbol: ")
-
-
-# In[7]:
-
 
 symbol_input
 
 
-# In[20]:
-
-
 schien_df=get_history(symbol=symbol_input,start=date(2020,1,1),end=date(2021,7,29));
 
-
-# In[9]:
-
-
 st.write(schien_df.tail(30))
-
-
-# In[10]:
-
-
-schien_df.tail(25)
-
-
-# In[11]:
-
 
 def get_macd(price, slow, fast, smooth):
     exp1 = price.ewm(span = fast, adjust = False).mean()
@@ -92,10 +40,6 @@ def get_macd(price, slow, fast, smooth):
     return df
 
 schien_macd= get_macd(schien_df['Close'], 26, 12, 9)
-
-
-# In[13]:
-
 
 def plot_macd(prices, macd, signal, hist):
     ax1 = plt.subplot2grid((8,1), (0,0), rowspan = 5, colspan = 1)
@@ -114,17 +58,9 @@ def plot_macd(prices, macd, signal, hist):
         pass
     plt.legend(loc = 'lower right')
 
-
-# In[14]:
-
-
 plot_macd(schien_df.Close,schien_macd.macd,schien_macd.signal,schien_macd.hist)
 
-
-# In[15]:
-
-
-def implement_macd_strategy(prices, data):    
+def implement_macd_strategy(prices, data):
     buy_price = []
     sell_price = []
     macd_signal = []
@@ -160,15 +96,7 @@ def implement_macd_strategy(prices, data):
             
 buy_price, sell_price, macd_signal = implement_macd_strategy(schien_df['Close'], schien_macd)
 
-
-# In[16]:
-
-
 st.set_option('deprecation.showPyplotGlobalUse', False)
-
-
-# In[19]:
-
 
 ax1 = plt.subplot2grid((8,1), (0,0), rowspan = 5, colspan = 1)
 ax2 = plt.subplot2grid((8,1), (5,0), rowspan = 3, colspan = 1)
